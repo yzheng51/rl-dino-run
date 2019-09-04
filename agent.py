@@ -168,7 +168,7 @@ class DoubleDQN(DQN):
         return expected_q.unsqueeze(1)
 
 
-class DQNPrioritized(DoubleDQN):
+class DQNPrioritized(DQN):
     def __init__(self, n_actions, device, batch_norm=False, alpha=0.6, beta=0.4, eps=1e-6):
         self.alpha = alpha
         super().__init__(n_actions, device, batch_norm)
