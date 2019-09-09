@@ -1,3 +1,7 @@
+"""
+This is a copy from  OpenAI baselines
+link: https://github.com/openai/baselines/blob/master/baselines/common/segment_tree.py
+"""
 import operator
 
 
