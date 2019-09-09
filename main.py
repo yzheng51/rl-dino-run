@@ -28,39 +28,29 @@ n_actions = env.action_space.n
 
 # ----------- Nature DQN ---------------
 dqn = DQN(n_actions, device)
-# dqn.train(env, logger)
-dqn.load("./trained/dqn.pkl")
-dqn.test(env)
+dqn.train(env, logger)
+# dqn.load("./trained/dqn.pkl")
+# dqn.test(env)
 
 # ----------- Prioritized DQN ---------------
-# dqn_p = DQNPrioritized(n_actions, device, beta=1)
+# dqn_p = DQNPrioritized(n_actions, device)
 # dqn_p.train(env, logger)
+# dqn_p.load("./trained/dqn_p.pkl")
+# dqn_p.test(env)
+
 
 # ----------- Double DQN ----------------
 # double_dqn = DoubleDQN(n_actions, device)
 # double_dqn.train(env, logger)
+# double_dqn.load("./trained/double-dqn.pkl")
+# double_dqn.test(env)
+
 
 # ----------- Dueling DQN ----------------
-duel_dqn = DuelDQN(n_actions, device)
+# duel_dqn = DuelDQN(n_actions, device)
 # duel_dqn.train(env, logger)
 # duel_dqn.load("./trained/duel-dqn.pkl")
 # duel_dqn.test(env)
 
-
-# ----------- Test ----------------------
-# dqn.load("./cases/v1/model_350.pkl")
-# score = dqn.test(env)
-# print(f"Score: {score}")
-
-# dqn.save(f"model_final.pkl")
 env.render(mode="rgb_array")
 env.close()
-
-# dqn ./cases/dqn/trained/model_1985.pkl
-# dqn-bn ./cases/dqn-bn/trained/model_1990.pkl
-
-# double-dqn ./cases/double-dqn/trained/model_1980.pkl
-# double-dqn-bn ./cases/double-dqn-bn/trained/model_1970.pkl
-
-# duel-dqn ./cases/duel-dqn/rerun-1/model_20.pkl
-# duel-dqn-bn final model ./cases/duel-dqn-bn/trained/model_1900.pkl
