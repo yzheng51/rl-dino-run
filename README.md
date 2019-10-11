@@ -39,7 +39,7 @@ Using tuned hyperparameters run 200 epochs. Prioritized Experience Replay shows 
 
 ![alt text](./images/train-result.png "T-rex Runner")
 
-### Comparison between DQN and DQN with Batch Normalization.
+### Comparison between DQN and DQN with Batch Normalization
 
 ![alt text](./images/train-result-bn.png "T-rex Runner")
 
