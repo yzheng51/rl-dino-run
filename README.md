@@ -80,8 +80,8 @@ In testing stage, each algorithm uses the latest model and run 30 times
 
 ## References
 
-- DQN: [[paper]]("https://storage.googleapis.com/deepmind-data/assets/papers/DeepMindNature14236Paper.pdf")[[code]](./agent.py#L19-L136)
-- Double DQN: [[paper]]("https://arxiv.org/pdf/1509.06461.pdf")[[code]](./agent.py#L150-L168)
-- Dueling DQN: [[paper]]("https://arxiv.org/pdf/1511.06581/pdf")[[code]](./agent.py#L139-L147)
-- DQN with Prioritized Experience Replay: [[paper]]("https://arxiv.org/pdf/1511.05952.pdf")[[code]](./agent.py#L171-L209)
-- Batch Normalization: [[paper]]("https://arxiv.org/pdf/1502.03167.pdf")
+- DQN: [[paper]](https://storage.googleapis.com/deepmind-data/assets/papers/DeepMindNature14236Paper.pdf)[[code]](./agent.py#L19-L136)
+- Double DQN: [[paper]](https://arxiv.org/pdf/1509.06461.pdf)[[code]](./agent.py#L150-L168)
+- Dueling DQN: [[paper]](https://arxiv.org/pdf/1511.06581/pdf)[[code]](./agent.py#L139-L147)
+- DQN with Prioritized Experience Replay: [[paper]](https://arxiv.org/pdf/1511.05952.pdf)[[code]](./agent.py#L171-L209)
+- Batch Normalization: [[paper]](https://arxiv.org/pdf/1502.03167.pdf)
