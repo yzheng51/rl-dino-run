@@ -1,3 +1,7 @@
+"""
+This is a script includes two type of experience replay pool
+
+"""
 import random
 from collections import namedtuple
 from sum_tree import SumSegmentTree, MinSegmentTree
@@ -29,6 +33,7 @@ class ReplayMemory:
 
 
 class PrioritizedReplayMemory(ReplayMemory):
+    """Prioritized Experience replay pool"""
     def __init__(self, capacity, alpha):
         super().__init__(capacity)
         self._alpha = alpha
@@ -42,7 +47,6 @@ class PrioritizedReplayMemory(ReplayMemory):
         self._max_priority = 1.0
 
     def push(self, *args):
-        """See ReplayBuffer.store_effect"""
         idx = self.position
         super().push(*args)
         self._it_sum[idx] = self._max_priority ** self._alpha

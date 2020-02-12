@@ -1,3 +1,7 @@
+"""
+This is a script stores all hyperparameters
+
+"""
 class HyperParam:
     MEMORY_SIZE = 30000
     BATCH_SIZE = 128

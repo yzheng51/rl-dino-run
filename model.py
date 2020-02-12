@@ -1,8 +1,13 @@
+"""
+This is a script contains neural networs for DQN models
+
+"""
 import torch.nn as nn
 import torch.nn.functional as F
 
 
 class ConvNet(nn.Module):
+    """Convolutional layers in DQN"""
     def __init__(self, batch_norm=False):
         super().__init__()
         self.conv1 = nn.Conv2d(4, 32, kernel_size=8, stride=4)
@@ -25,7 +30,7 @@ class ConvNet(nn.Module):
 
 
 class Net(ConvNet):
-    """Neural network to estimate Q-value"""
+    """Neural network to estimate Q-value in DQN"""
     def __init__(self, n_actions, batch_norm=False):
         super().__init__(batch_norm)
         self.fc = nn.Linear(3136, 512)
@@ -38,6 +43,7 @@ class Net(ConvNet):
 
 
 class DuelNet(ConvNet):
+    """Neural network to estimate Q-value in Dueling DQN"""
     def __init__(self, n_actions, batch_norm=False):
         super().__init__(batch_norm)
         self.fc_a = nn.Linear(3136, 512)

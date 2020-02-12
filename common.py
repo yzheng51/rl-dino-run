@@ -1,8 +1,13 @@
+"""
+This is a script includes replay memory and priorized replay memory
+
+"""
 import torch
 import numpy as np
 
 
 class LinearAnneal:
+    """Decay a parameter linearly"""
     def __init__(self, start_val, end_val, steps):
         self.p = start_val
         self.end_val = end_val
@@ -15,6 +20,7 @@ class LinearAnneal:
 
 
 class StateProcessor:
+    """Convert state image to tensor"""
     def to_array(self, state):
         state = np.array(state).transpose((2, 0, 1))
         state = np.ascontiguousarray(state, dtype=np.float32) / 255
