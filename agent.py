@@ -1,3 +1,7 @@
+"""
+This is a script contains DQN, Double DQN, Dueling DQN and DQN wih PER
+
+"""
 import random
 import itertools
 import numpy as np
@@ -29,12 +33,27 @@ class DQN(HyperParam):
         self.memory = ReplayMemory(self.MEMORY_SIZE)
 
     def _net_init(self, n_actions, batch_norm):
+        """
+        Initialization of two neural network
+
+        policy net - a function return the all q values corresponding to each action
+                     given the input state. This network is used to compute expected
+                     q vlue and will be optimized during each iteration
+        target net - a function which will be updated from policy net after N optimization
+                     step (N is a hyperparameter). This network is used to compute
+                     expected q value based on next state
+        """
         self.policy_net = Net(n_actions, batch_norm).to(self.device)
         self.target_net = Net(n_actions, batch_norm).to(self.device)
         self._update_target()
         self.target_net.eval()
 
     def _choose_action(self, state):
+        """
+        epsilon - greedy policy to decide next action
+
+        the value of epsilon will anneal linearly
+        """
         sample = random.random()
         if sample > self.epsilon.anneal():
             with torch.no_grad():
@@ -47,14 +66,21 @@ class DQN(HyperParam):
         return self.policy_net(states).gather(1, actions)
 
     def _expected_q(self, next_states, rewards):
+        """
+        Calculation of expected q value
+
+        based on bellman equation: q = r + gamma * q_next
+        """
+        # only use those next state is not the end of the game
         non_final_mask = torch.tensor(
             tuple(map(lambda s: s is not None, next_states)),
-            device=self.device, dtype=torch.uint8)
+            device=self.device, dtype=torch.bool)
         non_final_next_states = torch.cat([s for s in next_states if s is not None])
 
-        v = torch.zeros(self.BATCH_SIZE, device=self.device)
-        v[non_final_mask] = self.target_net(non_final_next_states).max(1)[0].detach()
-        expected_q = rewards + self.GAMMA * v
+        # put the state into the network and filter those action with the max q value
+        q_next = torch.zeros(self.BATCH_SIZE, device=self.device)
+        q_next[non_final_mask] = self.target_net(non_final_next_states).max(1)[0].detach()
+        expected_q = rewards + self.GAMMA * q_next
 
         return expected_q.unsqueeze(1)
 
@@ -67,11 +93,12 @@ class DQN(HyperParam):
         actions = torch.cat(batch.action)
         rewards = torch.cat(batch.reward)
 
+        # calculate q value and expected q value
         q = self._q(states, actions)
         expected_q = self._expected_q(batch.next_state, rewards)
         loss = F.smooth_l1_loss(q, expected_q)
 
-        # Optimize the model
+        # optimize the model
         self.optimizer.zero_grad()
         loss.backward()
         for param in self.policy_net.parameters():
@@ -137,6 +164,9 @@ class DQN(HyperParam):
 
 
 class DuelDQN(DQN):
+    """
+    Dueling DQN change the architecture of neural network compared with DQN
+    """
     def __init__(self, n_actions, device, batch_norm=False):
         super().__init__(n_actions, device, batch_norm)
 
@@ -148,28 +178,38 @@ class DuelDQN(DQN):
 
 
 class DoubleDQN(DQN):
+    """
+    Double DQN use target net to compute q values but choose the next action
+    resulting in maximum q value using policy net
+    """
     def __init__(self, n_actions, device, batch_norm=False):
         super().__init__(n_actions, device, batch_norm)
 
     def _expected_q(self, next_states, rewards):
         non_final_mask = torch.tensor(
             tuple(map(lambda s: s is not None, next_states)),
-            device=self.device, dtype=torch.uint8)
+            device=self.device, dtype=torch.bool)
         non_final_next_states = torch.cat([s for s in next_states if s is not None])
 
-        v = torch.zeros((self.BATCH_SIZE, self.n_actions), device=self.device)
-        v[non_final_mask] = self.target_net(non_final_next_states).detach()
+        q_next = torch.zeros((self.BATCH_SIZE, self.n_actions), device=self.device)
+        q_next[non_final_mask] = self.target_net(non_final_next_states).detach()
 
+        # get next action by policy net which is different to DQN
         next_a = torch.zeros(self.BATCH_SIZE, device=self.device, dtype=torch.long)
         next_a[non_final_mask] = self.policy_net(non_final_next_states).max(1)[1].detach()
 
-        expected_q = rewards + self.GAMMA * v[np.arange(self.BATCH_SIZE), next_a]
+        expected_q = rewards + self.GAMMA * q_next[np.arange(self.BATCH_SIZE), next_a]
 
         return expected_q.unsqueeze(1)
 
 
 class DQNPrioritized(DQN):
+    """
+    DQN with PER use a different experience replay pool which shows the importance
+    of each transition
+    """
     def __init__(self, n_actions, device, batch_norm=False, alpha=0.6, beta=0.4, eps=1e-6):
+        # alpha, beta, eps are suggested in the paper
         self.alpha = alpha
         super().__init__(n_actions, device, batch_norm)
         self.beta = LinearAnneal(beta, 1.0, self.EXPLORE_STEP)
@@ -193,6 +233,7 @@ class DQNPrioritized(DQN):
         q = self._q(states, actions)
         expected_q = self._expected_q(batch.next_state, rewards)
 
+        # update the priority of each transition
         td_error = expected_q - q
         new_priorities = torch.abs(td_error) + self.eps
         self.memory.update_priorities(idxes, new_priorities.flatten())
