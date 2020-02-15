@@ -1,6 +1,7 @@
 # rl-dino-run
 
 This project aims to
+
 - Creates an agent to play T-rex Runner
 - Compares the performance of different algorithms
 - Investigate the effect of batch normalization
@@ -8,6 +9,7 @@ This project aims to
 ## T-rex Runner
 
 This game environment is based on [this repo](https://github.com/elvisyjlin/gym-chrome-dino) and modify the reward function and preprocessing steps. To simplify the decision, there are only two actions in action space
+
 - Jump
 - Do nothing
 
@@ -27,23 +29,19 @@ There are many hyperparameters in Reinforcement Learning. In this project, we as
 | Explore steps   | 1 × 10^5  |
 | Learning Rate   | 2 × 10^−5 |
 
-Four example tuning process on learning rate, batch size, epsilon, gamma
-
-![alt text](./images/param-tune.png "T-rex Runner")
-
 ## Training Results
 
 ### Comparison of different DQN algorithms
 
 Using tuned hyperparameters run 200 epochs. Prioritized Experience Replay shows pretty bad effect because of weight update which is very time consuming and the game will keep runing when updating weight
 
-![alt text](./images/train-result.png "T-rex Runner")
+![alt text](./images/exp-train.png "T-rex Runner")
 
 ### Comparison between DQN and DQN with Batch Normalization
 
-![alt text](./images/train-result-bn.png "T-rex Runner")
+![alt text](./images/exp-train-bn.png "T-rex Runner")
 
-### Statistical Results
+### Statistical Results in Training
 
 | Algorithm         | Mean    | Std     | Max   | 25%    | 50%   | 75%     | Time (h) |
 | ----------------- | ------- | ------- | ----- | ------ | ----- | ------- | -------- |
@@ -62,9 +60,9 @@ In testing stage, each algorithm uses the latest model and run 30 times
 
 ### Boxplot of all cases
 
-![alt text](./images/test-result.png "T-rex Runner")
+![alt text](./images/exp-test.png "T-rex Runner")
 
-### Statistical Results
+### Statistical Results in Testing
 
 | Algorithm         | Mean       | Std        | Min     | Max      | 25%     | 50%       | 75%        |
 | ----------------- | ---------- | ---------- | ------- | -------- | ------- | --------- | ---------- |
@@ -77,6 +75,22 @@ In testing stage, each algorithm uses the latest model and run 30 times
 | Double DQN (BN)   | 382.17     | 188.74     | 43      | 738      | 283.75  | 356       | 525.5      |
 | Dueling DQN (BN)  | 2083.37    | 1441.50    | 213     | 5389     | 1142.5  | 1912.5    | 2659.75    |
 | DQN with PER (BN) | 45.43      | 7.384      | 43      | 78       | 43      | 43        | 43         |
+
+## Usage
+
+Download the chrome driver from [this link](https://chromedriver.chromium.org) corresponding to your Chrome version and put the executable in the root path
+
+Install all required modules by
+
+```sh
+pip install -r requirements.txt
+```
+
+Run the sample code
+
+```sh
+python main.py
+```
 
 ## References
 
